@@ -1,0 +1,13 @@
+# Render.com deployment config (your friend used iron-log on Render).
+# Push this repo to GitHub, then on Render: New > Static Site, pick the repo.
+# Render will read this file automatically.
+services:
+  - type: web
+    name: coach-training-app
+    runtime: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
