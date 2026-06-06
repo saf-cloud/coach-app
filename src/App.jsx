@@ -50,111 +50,159 @@ const CUE = {
   "5 km steady run": "Conversational pace start to finish. Negative-split if you feel good.",
   "Strides x6": "20s build to ~90% then walk back. Smooth, not strained.",
   "Play padel": "Move your feet, split-step, rotate through the hips on shots.",
+  "Side-to-side w/ 10kg": "Tall posture, sweep the weight side to side — hips stay square, the core does the turning.",
+  "Ab roller": "Hips tucked, roll out only as far as your back stays flat. Exhale on the way back.",
+  "Goblet squat": "Bell tight to chest, elbows inside knees, sit deep, chest tall. Drive up through the heels.",
+  "Press-ups on Y bar": "Hands on the bar, body one line. Full range — fast up, controlled down.",
+  "Medicine ball crunches": "Ball at chest, curl up slow with the abs — no pulling on the neck.",
+  "Med-ball punch-outs": "Punch straight out and snap back. Shoulders down, fast hands.",
+  "Med-ball press punch": "Drive up explosively, lower on a slow 3-count. Power up, control down.",
+  "Pull-ups (wide grip)": "Wide overhand grip, dead-hang start, chin over bar, zero swing.",
+  "Bicep pull-ups": "Underhand, shoulder-width. Squeeze the biceps at the top, lower slow.",
+  "Clean & press": "Bar close, hips snap it up, catch at the shoulders, press tall. Reset each rep.",
+  "Shoulder press (bar)": "Glutes and abs braced, press to full lockout — no leaning back.",
+  "Row 1600m": "Legs, then back, then arms. Pushed but steady — try to negative-split the second half.",
+  "Row blowout": "Three minutes, honest from the first stroke. Hold your split.",
+  "Lower back machine": "Smooth hinge, pause and squeeze at the top. No jerking.",
+  "Bicep curls & hammers": "Elbows pinned to your ribs — strict curls, then hammers.",
+  "Stride @ 16 km/h": "The opener — smooth and tall.",
+  "Stride @ 18 km/h": "Quick turnover, relaxed shoulders.",
+  "Stride @ 20 km/h": "Fast. Drive the arms.",
+  "Stride @ 22 km/h": "Top gear — full focus for 15 seconds.",
+  "8-min bike": "Level 10-12 — a pace you could barely hold a sentence at.",
+  "8-min row": "Long, powerful strokes. Pick a split and hold it.",
+  "8-min run @ 75%": "Strong but controlled — finish knowing you had a little more.",
+  "Jog": "Easy flush. Shake the legs out.",
+  "Stretch & core activation": "Hips, shoulders, then wake the core up — bird-dogs, dead bugs, easy holds.",
 };
-// --- exercise images: drop your own hosted/licensed image URLs here ---
-// Once deployed, put files in /public/exercises/ and reference as "/exercises/name.jpg",
-// or paste any image URL you have the rights to use. Empty = no image shown.
+// --- exercise images: public-domain photos from free-exercise-db (Unlicense) ---
+// https://github.com/yuhonas/free-exercise-db — each exercise has a start (0.jpg)
+// and finish (1.jpg) frame; the app alternates them to show movement direction.
+// To self-host later: download the folders into /public/exercises/ and change EXDB to "/exercises/".
+const EXDB = "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/";
 const IMG = {
-  "Front plank": "",
-  "Side plank w/ weight": "",
-  "Loaded hold": "",
-  "Medicine ball plank": "",
-  "Press-ups": "",
-  "Pull-ups": "",
-  "Dips": "",
-  "Bulgarian split squat": "",
-  "Reverse lunge": "",
-  "Walking / reverse lunge": "",
-  "Single-leg RDL": "",
-  "Hanging knee raise": "",
-  "Russian twist": "",
+  "Front plank": "Plank",
+  "Side plank w/ weight": "Side_Bridge",
+  "Loaded hold": "Farmers_Walk",
+  "Medicine ball plank": "Plank",
+  "Press-ups": "Pushups",
+  "Pull-ups": "Pullups",
+  "Dips": "Dips_-_Triceps_Version",
+  "Bulgarian split squat": "One_Leg_Barbell_Squat",
+  "Reverse lunge": "Dumbbell_Rear_Lunge",
+  "Walking / reverse lunge": "Bodyweight_Walking_Lunge",
+  "Single-leg RDL": "Stiff-Legged_Barbell_Deadlift",
+  "Hanging knee raise": "Hanging_Leg_Raise",
+  "Russian twist": "Russian_Twist",
+  "Goblet squat": "Goblet_Squat",
+  "Clean & press": "Clean_and_Press",
+  "Shoulder press (bar)": "Barbell_Shoulder_Press",
+  "Bicep pull-ups": "Chin-Up",
+  "Pull-ups (wide grip)": "Pullups",
+  "Ab roller": "Ab_Roller",
+  "Bicep curls & hammers": "Alternate_Hammer_Curl",
+  "Row 1600m": "Rowing_Stationary",
+  "Row blowout": "Rowing_Stationary",
+  "8-min row": "Rowing_Stationary",
+  "Press-ups on Y bar": "Pushups",
 };
 
 // ---------- Per-session focus line (coaching) ----------
 const FOCUS = {
-  "Strength A — Core & Pull Focus": "Today: pulling strength + bracing core. Quality reps over grinding — every pull-up clean, every plank rigid.",
-  "Strength B — Legs & Anti-Rotation": "Today: single-leg strength + a core that resists twisting. Control the split squats; don't rush the lunges.",
-  "Strength C — Full Circuit (timed grind)": "Today: conditioning meets strength. Keep moving, keep form — this is where lean & nimble is built.",
+  "Strength A — Core Circuit": "Today: your bread-and-butter circuit — rigid planks under load, deep goblet squats, then an engine finisher on the rower.",
+  "Strength B — Pull, Push & Bar": "Today: pulling strength + the barbell ladders. You're rebuilding to your old numbers — crisp reps, never grinding.",
+  "Strength C — Power & Med Ball": "Today: explosive hands and fast feet. Every rep with intent — this is what turns into padel winners.",
   "Cardio — Sprint Ladder Run": "Today: top-end speed + fat burn. The sprints sharpen the footwork padel rewards.",
   "Cardio — Padel": "Today: agility & play. This is conditioning that doesn't feel like training — enjoy it.",
-  "Cardio — 5km Steady + Strides": "Today: easy aerobic base. Stay relaxed; the strides at the end keep the legs springy.",
+  "Cardio — Engine Triplet": "Today: bike, row, run — one engine, three machines. Strong honest pace, not a sprint.",
 };
 
-// ---------- STRENGTH variants (cycle drives progression) ----------
+// ---------- STRENGTH variants (rebuilt from the real training log) ----------
+// Progression ramps back toward the old log numbers (then past them):
+// weights/reps creep with the cycle counter, capped sensibly, backed off on deloads.
 const strengthBlocks = (variantIdx, cycle, deload) => {
+  const r3 = deload ? 2 : 3;
   const repBump = Math.floor(cycle / 3);
-  const loadBump = Math.floor(cycle / 4) * 2.5;
-  const timeBump = Math.min(Math.floor(cycle / 2) * 5, 30);
-  const r3 = deload ? 2 : 3, r4 = deload ? 3 : 4; // fewer rounds on a deload
+  const plankBack3 = deload ? 10 : Math.min(10 + Math.floor(cycle / 2) * 5, 15);
+  const sidePlank = Math.min(5 + Math.floor(cycle / 4) * 2, 7);
+  const goblet = Math.min(12 + Math.floor(cycle / 3) * 2, 16);
+  const pressTop = Math.min(20 + Math.floor(cycle / 2) * 5, 35);
+  const cnpTop = Math.min(5 + Math.floor(cycle / 2) * 5, 15);
+  const dipReps = Math.min(8 + repBump, 12);
+  const pullReps = Math.min(4 + repBump, 6);
 
   const variants = [
     {
-      title: "Strength A — Core & Pull Focus",
-      core: { name: `Core Circuit — ${r3} rounds, 30s rest between moves`,
-        note: "Round 2: +10kg on back · Round 3: +15kg on back", est: 12, rounds: r3, priority: 2,
+      title: "Strength A — Core Circuit",
+      core: { name: `Core Circuit — ${r3} rounds · 30s rest between moves`,
+        note: `Round 2: +10kg on back · Round 3: +${plankBack3}kg (stick to 10 if too heavy) · 1 min rest between rounds`,
+        est: 18, rounds: r3, priority: 1,
         items: [
-          { label: "Front plank", type: "time", seconds: 40 + timeBump },
-          { label: "Side plank w/ weight", detail: "5-7kg · each side", type: "time", seconds: 30 + timeBump },
-          { label: "Loaded hold", detail: `${10 + loadBump}kg`, type: "time", seconds: 20 + timeBump },
-          { label: "Medicine ball plank", type: "time", seconds: 40 + timeBump },
-          { label: "Press-ups", detail: `${12 + repBump} reps`, type: "reps" },
+          { label: "Front plank", type: "time", seconds: 40 },
+          { label: "Side plank w/ weight", detail: `${sidePlank}kg · each side`, type: "time", seconds: 30 },
+          { label: "Side-to-side w/ 10kg", type: "time", seconds: 30 },
+          { label: "Loaded hold", detail: "10kg · 10-20s", type: "time", seconds: 20 },
+          { label: "Ab roller", type: "time", seconds: 30 },
+          { label: "Goblet squat", detail: `${goblet}kg`, type: "time", seconds: 30 },
+          { label: "Press-ups on Y bar", detail: "12-16 reps", type: "reps" },
         ] },
-      main: { name: "Pull / Push", est: 10, priority: 1,
+      main: { name: "Engine Finisher", est: 8, priority: 2,
         items: [
-          { label: "Pull-ups", detail: `4 x ${4 + repBump}-${6 + repBump}`, type: "sets" },
-          { label: "Dips", detail: `4 x ${10 + repBump}`, type: "sets" },
+          { label: "Row 1600m", detail: "pushed but steady", type: "manual" },
         ] },
-      legs: { name: `Legs — ${r3} rounds, 30s on / 30s off`, est: 9, rounds: r3, priority: 1,
-        items: [
-          { label: "Bulgarian split squat", detail: "each leg", type: "time", seconds: 30 },
-          { label: "Reverse lunge", type: "time", seconds: 30 },
-          { label: "Single-leg RDL", detail: "each leg", type: "time", seconds: 30 },
-        ] },
-      finisher: { name: `Rotational Finisher — ${r3} rounds, 40s on / 20s off`, est: 6, rounds: r3, priority: 3,
-        items: [
-          { label: "Hanging knee raise", type: "time", seconds: 40 },
-          { label: "Russian twist", type: "time", seconds: 40 },
-        ] },
-    },
-    {
-      title: "Strength B — Legs & Anti-Rotation",
-      legs: { name: `Legs — ${r4} rounds, 40s on / 20s off`,
-        note: "Add a loaded backpack once bodyweight feels easy.", est: 13, rounds: r4, priority: 1,
-        items: [
-          { label: "Bulgarian split squat", detail: "each leg", type: "time", seconds: 40 },
-          { label: "Walking / reverse lunge", type: "time", seconds: 40 },
-          { label: "Single-leg RDL", detail: "each leg", type: "time", seconds: 40 },
-        ] },
-      main: { name: "Pull / Push", est: 10, priority: 1,
-        items: [
-          { label: "Pull-ups", detail: `4 x ${4 + repBump}-${6 + repBump}`, type: "sets" },
-          { label: "Dips", detail: `4 x ${10 + repBump}`, type: "sets" },
-        ] },
-      core: { name: `Anti-Rotation Core — ${r3} rounds`, est: 11, rounds: r3, priority: 2,
-        items: [
-          { label: "Front plank", type: "time", seconds: 45 + timeBump },
-          { label: "Side plank w/ weight", detail: "5-7kg · each side", type: "time", seconds: 30 + timeBump },
-          { label: "Medicine ball plank", type: "time", seconds: 45 + timeBump },
-          { label: "Press-ups", detail: `${12 + repBump} reps`, type: "reps" },
-        ] },
+      legs: null,
       finisher: null,
     },
     {
-      title: "Strength C — Full Circuit (timed grind)",
-      main: { name: `Big Circuit — ${r4} rounds, 40s on / 20s off`,
-        note: "Move straight through. Strength + conditioning blend.", est: 24, rounds: r4, priority: 1,
+      title: "Strength B — Pull, Push & Bar",
+      main: { name: "Pull / Push", est: 14, priority: 1,
         items: [
-          { label: "Pull-ups", detail: "max clean reps", type: "time", seconds: 40 },
-          { label: "Bulgarian split squat", detail: "each leg", type: "time", seconds: 40 },
-          { label: "Dips", detail: "max clean reps", type: "time", seconds: 40 },
-          { label: "Single-leg RDL", detail: "each leg", type: "time", seconds: 40 },
-          { label: "Hanging knee raise", type: "time", seconds: 40 },
-          { label: "Russian twist", type: "time", seconds: 40 },
+          { label: "Pull-ups (wide grip)", detail: `4 x ${pullReps}`, type: "sets" },
+          { label: "Dips", detail: `4 x ${dipReps}`, type: "sets" },
+          { label: "Bicep pull-ups", detail: "4 x 4", type: "sets" },
         ] },
-      finisher: { name: `Plank Finisher — ${deload ? 1 : 2} rounds`, est: 6, rounds: deload ? 1 : 2, priority: 3,
+      legs: { name: "Barbell Ladders", note: "~1 min between sets. Ladder up, then back down.",
+        est: 16, priority: 2,
         items: [
-          { label: "Front plank", type: "time", seconds: 45 + timeBump },
-          { label: "Side plank w/ weight", detail: "5-7kg · each side", type: "time", seconds: 30 + timeBump },
+          { label: "Clean & press", detail: `bar → 5 → ${cnpTop}kg · 4-6 reps`, type: "sets" },
+          { label: "Shoulder press (bar)", detail: `bar → 10 → 20 → ${pressTop}kg · 5-6 reps`, type: "sets" },
+          { label: "Row blowout", detail: "3 min flat out", type: "manual" },
+        ] },
+      core: { name: "Core Activation — 2 rounds", est: 8, rounds: 2, priority: 2,
+        items: [
+          { label: "Front plank", type: "time", seconds: 40 },
+          { label: "Side plank w/ weight", detail: `${sidePlank}kg · each side`, type: "time", seconds: 30 },
+          { label: "Medicine ball crunches", type: "time", seconds: 30 },
+        ] },
+      finisher: { name: "Back & Arms", est: 7, priority: 3,
+        items: [
+          { label: "Lower back machine", detail: "4 x 8 · 10-15kg", type: "sets" },
+          { label: "Bicep curls & hammers", detail: "3 x 8 · 10kg", type: "sets" },
+        ] },
+    },
+    {
+      title: "Strength C — Power & Med Ball",
+      core: { name: `Med-Ball Power — ${r3} rounds`, note: "Explosive intent on every rep — this is the padel-power work.",
+        est: 14, rounds: r3, priority: 1,
+        items: [
+          { label: "Med-ball punch-outs", detail: "3kg · 8 each arm", type: "reps" },
+          { label: "Med-ball press punch", detail: "6kg · 10-12 · fast up, slow down", type: "reps" },
+          { label: "Medicine ball plank", detail: "reach fwd + both sides x 12", type: "reps" },
+          { label: "Front plank", type: "time", seconds: 40 },
+          { label: "Side plank w/ weight", detail: `${sidePlank}kg · each side`, type: "time", seconds: 30 },
+        ] },
+      main: { name: "Speed — Strides · 15s on / 45s off", note: "Walk-back recovery between reps. Build through the ladder.",
+        est: 10, priority: 2,
+        items: [
+          { label: "Stride @ 16 km/h", detail: "x 2", type: "time", seconds: 15 },
+          { label: "Stride @ 18 km/h", detail: "x 2", type: "time", seconds: 15 },
+          { label: "Stride @ 20 km/h", detail: "x 2", type: "time", seconds: 15 },
+          { label: "Stride @ 22 km/h", detail: "x 2", type: "time", seconds: 15 },
+        ] },
+      legs: null,
+      finisher: { name: "Flush Jog", est: 7, priority: 3,
+        items: [
+          { label: "Jog", detail: "6-8 min @ 10 km/h", type: "manual" },
         ] },
     },
   ];
@@ -166,6 +214,7 @@ const cardioBlocks = (variantIdx, cycle, budget, deload) => {
   const extra = Math.floor(cycle / 2);
   let ladders = budget === 30 ? 3 + extra : budget === 90 ? 6 + extra : 4 + extra;
   if (deload) ladders = Math.max(2, ladders - 2);
+  const tri = (budget >= 60 && !deload) ? 2 : 1;
   const variants = [
     {
       title: "Cardio — Sprint Ladder Run",
@@ -196,12 +245,16 @@ const cardioBlocks = (variantIdx, cycle, budget, deload) => {
       ],
     },
     {
-      title: "Cardio — 5km Steady + Strides",
+      title: "Cardio — Engine Triplet",
       blocks: [
-        { name: "Run", est: 30, rounds: 1, priority: 1,
+        { name: "Stretch & core activation", est: 5, warmup: true,
+          items: [{ label: "Stretch & core activation", detail: "hips, shoulders, easy core", type: "manual" }] },
+        { name: `Triplet — ${tri} round${tri > 1 ? "s" : ""} · 1 min rest between machines${tri > 1 ? " · 3 min between rounds" : ""}`,
+          note: "8 minutes each at ~75% — strong but repeatable.", est: 28 * tri, rounds: tri, priority: 1,
           items: [
-            { label: "5 km steady run", detail: "conversational pace", type: "manual" },
-            { label: "Strides x6", detail: "20s build to fast, walk back", type: "time", seconds: 20 },
+            { label: "8-min bike", detail: "level 10-12", type: "time", seconds: 480 },
+            { label: "8-min row", detail: "steady split", type: "time", seconds: 480 },
+            { label: "8-min run @ 75%", type: "time", seconds: 480 },
           ] },
       ],
     },
@@ -211,16 +264,16 @@ const cardioBlocks = (variantIdx, cycle, budget, deload) => {
 
 // ---------- Dynamic warm-up ----------
 const buildWarmup = (variantTitle, budget) => {
-  const isGrind = variantTitle.includes("Full Circuit");
-  let bike, skip, why;
-  if (budget === 30) { bike = 0; skip = 300; why = "Tight window — short skip primes the feet; the work warms you up."; }
-  else if (isGrind) { bike = 300; skip = 300; why = "The circuit ramps you up from rep one, so keep the warm-up short and stay fresh."; }
-  else if (budget === 90) { bike = 600; skip = 600; why = "Full window — proper warm-up before skill + strength work."; }
-  else { bike = 600; skip = 300; why = "Warm but fresh for the pull-ups and loaded work."; }
+  const isPower = variantTitle.includes("Power");
+  let bike, stretch, why;
+  if (budget === 30) { bike = 0; stretch = 300; why = "Tight window — quick stretch & core activation; the circuit warms you up."; }
+  else if (isPower) { bike = 300; stretch = 300; why = "Short spin then stay fresh — you want spring in the explosive work."; }
+  else if (budget === 90) { bike = 600; stretch = 600; why = "Full window — easy spin, proper stretch & core activation."; }
+  else { bike = 600; stretch = 300; why = "Warm but fresh for the pulls and loaded work."; }
   const items = [];
-  if (bike) items.push({ label: "Bike — easy spin", detail: `${bike / 60} min`, type: "time", seconds: bike });
-  if (skip) items.push({ label: "Skipping", detail: `${skip / 60} min · light feet`, type: "time", seconds: skip });
-  return { name: "Warm-up", note: why, est: Math.round((bike + skip) / 60), items, warmup: true };
+  if (bike) items.push({ label: "Bike — easy spin", detail: `${bike / 60} min · level 10-12`, type: "time", seconds: bike });
+  if (stretch) items.push({ label: "Stretch & core activation", detail: `${stretch / 60} min`, type: "time", seconds: stretch });
+  return { name: "Warm-up", note: why, est: Math.round((bike + stretch) / 60), items, warmup: true };
 };
 
 // ---------- Assemble session to fit time budget ----------
@@ -249,8 +302,9 @@ const totalEst = (s) => s.blocks.reduce((a, b) => a + (b.est || 0), 0);
 // ---------- Apple Watch workout type ----------
 const appleType = (session) => {
   const t = session.title;
-  if (t.includes("Full Circuit")) return { rec: "High Intensity Interval Training", why: "continuous 40/20 work — HIIT estimates the burn best" };
-  if (session.type === "strength") return { rec: "Functional Strength Training", why: "right profile for bodyweight + circuit work" };
+  if (t.includes("Engine Triplet")) return { rec: "High Intensity Interval Training", why: "mixed bike/row/run blocks — HIIT tracks the effort best" };
+  if (t.includes("Power & Med Ball")) return { rec: "High Intensity Interval Training", why: "explosive circuit + strides — HIIT estimates the burn best" };
+  if (session.type === "strength") return { rec: "Functional Strength Training", why: "right profile for circuit + barbell work" };
   if (t.includes("Padel")) return { rec: "Tennis", why: "closest racquet-sport profile (no padel option)" };
   if (t.includes("Sprint")) return { rec: "Running (Indoor)", why: "treadmill intervals" };
   return { rec: "Running (Outdoor)", why: "steady run" };
@@ -281,6 +335,34 @@ function Timer({ seconds, accent }) {
           <div style={{ height: "100%", width: `${pct}%`, background: accent, transition: "width 1s linear" }} />
         </div>
       </div>
+    </div>
+  );
+}
+
+// ---------- Exercise image: still by default; tap to animate start<->finish ----------
+function ExImg({ id, alt }) {
+  const [frame, setFrame] = useState(0);
+  const [play, setPlay] = useState(false);
+  useEffect(() => {
+    if (!play) { setFrame(0); return; }
+    const t = setInterval(() => setFrame((f) => 1 - f), 900);
+    return () => clearInterval(t);
+  }, [play]);
+  const imgStyle = (visible) => ({
+    position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "left center",
+    opacity: visible ? 1 : 0, transition: "opacity 0.25s ease",
+  });
+  return (
+    <div onClick={() => setPlay((p) => !p)} role="button" aria-label={`${alt} demo`}
+      style={{ position: "relative", height: 170, marginTop: 10, borderRadius: 10, cursor: "pointer",
+      overflow: "hidden", background: "#0d0d0d", border: "1px solid #1f1f1f" }}>
+      <img src={`${EXDB}${id}/0.jpg`} alt={`${alt} — start position`} style={imgStyle(frame === 0)} />
+      <img src={`${EXDB}${id}/1.jpg`} alt={`${alt} — finish position`} style={imgStyle(frame === 1)} />
+      <span style={{ position: "absolute", right: 8, bottom: 8, fontSize: 10, fontWeight: 700,
+        fontFamily: "'JetBrains Mono', monospace", letterSpacing: "0.08em", textTransform: "uppercase",
+        background: "rgba(10,10,10,0.75)", color: "#d4ff3f", borderRadius: 6, padding: "3px 8px" }}>
+        {play ? (frame === 0 ? "start" : "finish") : "▶ tap for demo"}
+      </span>
     </div>
   );
 }
@@ -492,7 +574,7 @@ export default function App() {
           width: "100%", marginTop: 10, padding: 18, borderRadius: 14, border: "none",
           background: ready ? ACCENT : "#222", color: ready ? "#0a0a0a" : "#555",
           fontSize: 16, fontWeight: 700, cursor: ready ? "pointer" : "not-allowed", fontFamily: "'Space Grotesk', sans-serif" }}>
-          Save & rotate to {isStrength ? "Cardio" : "Strength"}
+          Save &amp; rotate to {isStrength ? "Cardio" : "Strength"}
         </button>
         {(feel === "brutal" || niggle === "tweaked") ? (
           <p style={{ textAlign: "center", color: "#fbbf24", fontSize: 12, marginTop: 14, lineHeight: 1.5 }}>Next same-type session will back off — fewer rounds, recovery first.</p>
@@ -555,9 +637,7 @@ export default function App() {
                     <span style={{ fontSize: 15, color: "#e5e5e5", fontWeight: 500 }}>{item.label}</span>
                     {item.detail && <span style={{ fontSize: 12, color: "#888", textAlign: "right", fontFamily: "'JetBrains Mono', monospace" }}>{item.detail}</span>}
                   </div>
-                  {IMG[item.label] ? (
-                    <img src={IMG[item.label]} alt={item.label} style={{ width: "100%", maxHeight: 200, objectFit: "cover", borderRadius: 10, marginTop: 8, border: "1px solid #1f1f1f" }} />
-                  ) : null}
+                  {IMG[item.label] ? <ExImg id={IMG[item.label]} alt={item.label} /> : null}
                   {CUE[item.label] && <div style={{ fontSize: 12, color: "#9a9a6a", marginTop: 4, lineHeight: 1.4 }}>{CUE[item.label]}</div>}
                   {item.type === "time" && <Timer seconds={item.seconds} accent={ACCENT} />}
                   {item.type === "manual" && <div style={{ marginTop: 4, fontSize: 12, color: "#666", fontStyle: "italic" }}>self-paced — use your phone timer</div>}
